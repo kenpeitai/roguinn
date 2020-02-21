@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,16 +21,19 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class LogInActivity extends AppCompatActivity {
-    String edit_account;
-    String edit_password;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final String[] edit_account = new String[1];
+        final String[] edit_password = new String[1];
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
@@ -41,7 +45,7 @@ public class LogInActivity extends AppCompatActivity {
         ImageView imageView3 = findViewById(R.id.youtube);
         EditText editText = findViewById(R.id.edit_account);
         EditText editText1 = findViewById(R.id.edit_password);
-        final TextView info =findViewById(R.id.info);
+        final TextView info = findViewById(R.id.info);
         info.bringToFront();
         editText.bringToFront();
         editText1.bringToFront();
@@ -78,14 +82,14 @@ public class LogInActivity extends AppCompatActivity {
         imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LogInActivity.this, "我们怀疑你受到资本主义的侵蚀！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LogInActivity.this, "你不能使用这么小布尔乔亚的功能！", Toast.LENGTH_SHORT).show();
                 music2.start();
             }
         });
         imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LogInActivity.this, "警告！我们怀疑你是西方的间谍！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LogInActivity.this, "你不能使用这么小布尔乔亚的功能！", Toast.LENGTH_SHORT).show();
                 music3.start();
             }
         });
@@ -96,51 +100,24 @@ public class LogInActivity extends AppCompatActivity {
                 music4.start();
             }
         });
-        final Intent intent= new Intent(LogInActivity.this,GameActivity.class);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 music.start();
-
-                String s1;
-                String arr[]=null;
-                String fin_account=edit_account;
-                String fin_password=edit_password;
-                FileInputStream in = null;
-                BufferedReader reader = null;
-                StringBuilder content = new StringBuilder();
-                try {
-                    in = openFileInput("data");
-                    reader = new BufferedReader(new InputStreamReader(in));
-                    String line = "";
-                    while ((line = reader.readLine())!= null){content.append(line);}
-                    reader.close();
-                    Log.d("----------------->","IO处理完毕");
-                    s1 = content.toString();
-                    arr=s1.split("|");
-                    if (fin_account.length()==0){
-                    info.setText("请您输入КГБ工号");
-                }else if(fin_password.length()==0){
-                    info.setText("请您输入密匙");
-                }else{Log.d("----------------->","for即将开始");
-                    for (int i = 0; i <arr.length ; i++) {
-                        String arr1[]=arr[i].split(",");
-                         if (arr1[0].equals(fin_account)){
-                            Log.d("----------------->","账号对了");
-                            if (arr1[1] .equals(fin_password)) {
-                                Log.d("----------------->","密码对了");
-
-                                startActivity(intent);
-                            }else {
-                                break;
-                            }
-                        }
+                if (edit_account[0].length() == 0) {
+                    info.setText("请输入工号");
+                } else if (edit_password[0].length() == 0) {
+                    info.setText("请输入密匙");
+                } else {
+                    if (isCorrect(edit_account[0], edit_password[0])) {
+                        startActivity(new Intent(LogInActivity.this, GameActivity.class));
+                    } else {
+                        info.setText("工号或密匙不正确");
                     }
-                    info.setText("工号或密匙输入错误");
                 }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+
             }
         });
 
@@ -168,12 +145,10 @@ public class LogInActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
-                edit_account=s.toString();
+                edit_account[0] = s.toString();
 
 
-                }
-
-
+            }
 
 
         });
@@ -191,10 +166,53 @@ public class LogInActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-               edit_password = s.toString();
+                edit_password[0] = s.toString();
 
             }
         });
+
+    }
+
+    public String getData() {
+        String s1 = null;
+        FileInputStream in = null;
+        BufferedReader reader = null;
+        StringBuilder content = new StringBuilder();
+        try {
+            in = openFileInput("data1");
+            reader = new BufferedReader(new InputStreamReader(in));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                content.append(line);
+            }
+            reader.close();
+           // Log.d("----------------->", "IO处理完毕");
+            s1 = content.toString();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return s1;
+    }
+
+    public boolean isCorrect(String account, String password) {
+        File f = new File(Environment.getDataDirectory().getPath() +"/data/com.example.roguinn/files/data1");
+        if (!f.exists()) {
+            Log.d("tag1","return false");
+            return false;
+
+        }
+
+        String s[] = getData().split("!");
+        for (String value : s) {
+            String s1[] = value.split(",");
+            if (s1[0].equals(account) && s1[1].equals(password)) {
+                return true;
+            }
+        }
+        return false;
+
 
     }
 }

@@ -13,14 +13,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></VideoView>
+        app:layout_constraintTop_toTopOf="parent">
+
+    </VideoView>
 
     <EditText
         android:id="@+id/register_account"
         android:layout_width="385sp"
         android:layout_height="54sp"
         android:layout_marginTop="88dp"
-        android:background="@drawable/edit_shape"
+        android:background="@layout/edit_shape"
         android:digits="@string/register_name_digits"
         android:hint="注册您的КГБ工号：使用字母+数字"
         android:inputType="text"
@@ -33,7 +35,7 @@
         android:id="@+id/register_password"
         android:layout_width="385sp"
         android:layout_height="54sp"
-        android:background="@drawable/edit_shape"
+        android:background="@layout/edit_shape"
         android:hint="创建您的识别密匙"
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -41,13 +43,15 @@
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_account"
-        app:layout_constraintVertical_bias="0.199"></EditText>
+        app:layout_constraintVertical_bias="0.199">
+
+    </EditText>
 
     <EditText
         android:id="@+id/register_password_confirm"
         android:layout_width="385sp"
         android:layout_height="54sp"
-        android:background="@drawable/edit_shape"
+        android:background="@layout/edit_shape"
         android:hint="确认密匙"
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -61,7 +65,7 @@
         android:id="@+id/btn_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn_shape2"
+        android:background="@layout/btn_shape2"
         android:gravity="center"
         android:textSize="20sp"
         android:text=" ☭ 注册并登录 ☭ "

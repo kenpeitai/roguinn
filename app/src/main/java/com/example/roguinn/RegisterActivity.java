@@ -2,6 +2,7 @@ package com.example.roguinn;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
@@ -9,6 +10,7 @@ import android.net.Uri;
 
 import android.os.Bundle;
 
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 
@@ -23,6 +25,7 @@ import android.widget.VideoView;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -137,7 +140,8 @@ public class RegisterActivity extends AppCompatActivity {
         final Button button_r = findViewById(R.id.btn_register);
         button_r.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)  {
+               
                 if (editText.getText().toString().isEmpty() || editText1.getText().toString().isEmpty() || editText2.getText().toString().isEmpty()) {
                     Toast.makeText(RegisterActivity.this, "您还没有输入完整信息", Toast.LENGTH_SHORT).show();
                 } else if (!password[0].equals(password_confirm[0])) {
@@ -147,6 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
                     if (isExist(account[0])) {
                         textView_alexist.setText("此工号已存在");
                     } else {
+                        textView_alexist.setText("             ");
                         Register(account[0], password[0]);
                         startActivity(new Intent(RegisterActivity.this, GameActivity.class));
                     }
@@ -158,12 +163,16 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public boolean isExist(String account) {
+        File f = new File(Environment.getDataDirectory().getPath() +"/data/com.example.roguinn/files/data1");
+        if (!f.exists()) {
+            return false;
+        }
         String s = getData();
-        String arr[] = s.split("|");
+        String arr[] = s.split("!");
         for (int i = 0; i < arr.length; i++) {
             String arr1[] = arr[i].split(",");
             if (arr1[0].equals(account)) {
-                Log.d("----------------->", "发现重名");
+               // Log.d("----------------->", "发现重名");
                 return true;
             }
         }
@@ -173,9 +182,9 @@ public class RegisterActivity extends AppCompatActivity {
     public void Register(String account, String password) {
         FileOutputStream out = null;
         BufferedWriter writer = null;
-        String accountInfo = account + "," + password + "|";
+        String accountInfo = account + "," + password + "!";
         try {
-            out = openFileOutput("data", MODE_APPEND);
+            out = openFileOutput("data1", MODE_APPEND);
             writer = new BufferedWriter(new OutputStreamWriter(out));
             writer.write(accountInfo);
             writer.close();
@@ -191,14 +200,14 @@ public class RegisterActivity extends AppCompatActivity {
         BufferedReader reader = null;
         StringBuilder content = new StringBuilder();
         try {
-            in = openFileInput("data");
+            in = openFileInput("data1");
             reader = new BufferedReader(new InputStreamReader(in));
             String line = "";
             while ((line = reader.readLine()) != null) {
                 content.append(line);
             }
             reader.close();
-            Log.d("----------------->", "IO处理完毕");
+           // Log.d("----------------->", "IO处理完毕");
             s1 = content.toString();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
